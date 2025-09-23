@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { toggleTodo, deleteTodo, updateTodo, type Todo } from "../store/todoSlice";
 
@@ -15,10 +15,10 @@ export default function TodoItem({ todo }: { todo: Todo }) {
     setEditing(false);
   };
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setText(todo.text);
     setEditing(false);
-  };
+  }, [todo.text]);
 
   // Click ra ngoài li sẽ hủy edit
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [editing]);
+  }, [editing, handleCancel]);
 
   return (
     <li

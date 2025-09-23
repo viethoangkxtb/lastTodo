@@ -9,7 +9,10 @@ export default function TodoFooter() {
   const remaining = todos.filter((t) => !t.completed).length;
 
   return (
-    <div className="flex justify-between items-center px-4 py-2 text-sm text-gray-600 bg-white border-t border-[#e6e6e6]">
+    <div className="flex justify-between items-center px-4 py-2 text-sm text-gray-600 bg-white border-b  relative">
+      {/* Shadow layers lòi ra phía sau */}
+      <div className="absolute -bottom-1 left-1 right-1 h-1 bg-white border-x border-b border-[#e6e6e6] opacity-80"></div>
+      <div className="absolute -bottom-2 left-2 right-2 h-1 bg-white border-x border-b border-[#e6e6e6] opacity-60"></div>
       <span className="w-24 flex-shrink-0">
         {remaining} {remaining === 1 ? "item" : "items"} left!
       </span>

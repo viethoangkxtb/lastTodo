@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTodo } from "../store/todoSlice";
+import { addTodo, toggleAllTodos } from "../store/todoSlice";
 import type { AppDispatch } from "../store";
 
 export default function TodoInput() {
@@ -21,7 +21,7 @@ export default function TodoInput() {
         className={`w-[50px] h-full flex items-center justify-center text-gray-400 
                     rounded-none outline-none bg-white
                     ${buttonFocused ? "border-2 border-[#af2f2f]" : "border-2 border-transparent"}`}
-        onClick={() => console.log("Toggle all")}
+        onClick={() => dispatch(toggleAllTodos())}
         onFocus={() => setButtonFocused(true)}
         onBlur={() => setButtonFocused(false)}
       >
