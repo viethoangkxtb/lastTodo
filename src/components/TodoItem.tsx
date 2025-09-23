@@ -1,14 +1,46 @@
+import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { toggleTodo, deleteTodo, type Todo } from "../store/todoSlice";
+import { toggleTodo, deleteTodo, updateTodo, type Todo } from "../store/todoSlice";
 
 export default function TodoItem({ todo }: { todo: Todo }) {
   const dispatch = useDispatch();
+  const [editing, setEditing] = useState(false);
+  const [text, setText] = useState(todo.text);
+  const liRef = useRef<HTMLLIElement>(null);
+
+  const handleSave = () => {
+    const trimmed = text.trim();
+    if (trimmed === "") return;
+    dispatch(updateTodo({ id: todo.id, text: trimmed }));
+    setEditing(false);
+  };
+
+  const handleCancel = () => {
+    setText(todo.text);
+    setEditing(false);
+  };
+
+  // Click ra ngoài li sẽ hủy edit
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (editing && liRef.current && !liRef.current.contains(event.target as Node)) {
+        handleCancel();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [editing]);
 
   return (
-    <li className="group flex items-center justify-between border-b border-[#e6e6e6] px-4 py-3 bg-white">
+    <li
+      ref={liRef}
+      className={`group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200 ${editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"
+        }`}
+      onDoubleClick={() => setEditing(true)}
+    >
       <div className="flex items-center gap-3">
-        {/* custom checkbox */}
-        <label className="flex items-center cursor-pointer">
+        {/* checkbox */}
+        <label className={`flex items-center cursor-pointer ${editing ? "invisible" : "visible"}`}>
           <input
             type="checkbox"
             checked={todo.completed}
@@ -16,15 +48,9 @@ export default function TodoItem({ todo }: { todo: Todo }) {
             className="peer sr-only"
             aria-label={`Toggle ${todo.text}`}
           />
-
           <span
-            className={`
-          w-6 h-6 rounded-full border-2 
-          flex items-center justify-center
-          transition-all duration-150
-          bg-white
-          ${todo.completed ? "border-[#bddad5]" : "border-[#ededed]"}
-        `}
+            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-150 bg-white ${todo.completed ? "border-[#bddad5]" : "border-[#ededed]"
+              }`}
           >
             <svg
               className={`w-4 h-4 text-[#5dc2af] transition-opacity duration-150 ${todo.completed ? "opacity-100" : "opacity-0"
@@ -39,24 +65,35 @@ export default function TodoItem({ todo }: { todo: Todo }) {
           </span>
         </label>
 
-        {/* text */}
-        <span
-          className={`text-xl ${todo.completed ? "line-through text-gray-400" : ""
-            }`}
-        >
-          {todo.text}
-        </span>
+        {/* text hoặc input */}
+        {editing ? (
+          <input
+            type="text"
+            className="text-xl border-none focus:outline-none w-full"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+              if (e.key === "Escape") handleCancel();
+            }}
+            autoFocus
+            aria-label="Edit todo text"
+          />
+        ) : (
+          <span className={`text-xl ${todo.completed ? "line-through text-gray-400" : ""}`}>
+            {todo.text}
+          </span>
+        )}
       </div>
 
-      {/* delete */}
+      {/* delete button */}
       <button
         onClick={() => dispatch(deleteTodo(todo.id))}
-        className="opacity-0 group-hover:opacity-100 transition duration-200 
-       text-gray-500 hover:text-red-400"
+        className={`transition duration-200 text-[#949494] hover:text-[#C18585] ${editing ? "invisible" : "opacity-0 group-hover:opacity-100 text-2xl"
+          }`}
       >
-        ✖
+        ×
       </button>
     </li>
-
   );
 }
