@@ -10,11 +10,8 @@ export default function TodoItem({ todo }: { todo: Todo }) {
 
   const handleSave = () => {
     const trimmedText = text.trim(); // trim đầu cuối
-    console.log("trimmedText: ","0", trimmedText, "0")
-    console.log("text: ","0", text, "0")
     if (trimmedText === "") return;   // nếu rỗng thì không lưu
     dispatch(updateTodo({ id: todo.id, text: trimmedText })); // lưu text đã trim
-    setText(trimmedText);
     setEditing(false);
   };
 
@@ -48,7 +45,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
     >
       <div className="flex items-center gap-3">
         {/* checkbox */}
-        <div className="w-12 h-12 flex items-center justify-center border rounded bg-gray-50"><label
+        <label
           className={`flex items-center cursor-pointer ${editing ? "invisible" : "visible"}`}
           onDoubleClick={(e) => e.stopPropagation()} // <--- ngăn bubbling
         >
@@ -75,8 +72,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </span>
-        </label></div>
-        
+        </label>
 
 
         {/* text hoặc input */}
