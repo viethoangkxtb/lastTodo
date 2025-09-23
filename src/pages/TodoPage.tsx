@@ -4,12 +4,11 @@ import TodoFooter from "../components/TodoFooter";
 
 export default function TodoPage() {
   return (
-    <div className="flex justify-center mt-10">
-      <div className="w-[550px] shadow-lg bg-white">
-        <h1 className="text-6xl text-center text-red-600 mb-6 font-thin">
+    <div className="flex min-h-screen bg-[#f5f5f5]">
+      <div className="relative top-[90px] w-[550px] shadow-lg bg-[#f5f5f5]">
+        <h1 className="text-[100px] text-center text-[#b83f45] mb-6 font-normal">
           todos
         </h1>
-
         <TodoInput />
         <TodoList />
         <TodoFooter />
