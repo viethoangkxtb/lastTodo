@@ -6,23 +6,28 @@ export default function TodoFooter() {
   const dispatch = useDispatch();
   const { todos, filter } = useSelector((state: RootState) => state.todos);
 
+  const remaining = todos.filter((t) => !t.completed).length;
+
   return (
-    <div className="flex justify-between items-center px-4 py-2 text-sm text-gray-600">
-      <span>{todos.filter((t) => !t.completed).length} items left!</span>
+    <div className="flex justify-between items-center px-4 py-2 text-sm text-gray-600 bg-white border-t border-[#e6e6e6]">
+      <span className="w-24 flex-shrink-0">
+        {remaining} {remaining === 1 ? "item" : "items"} left!
+      </span>
       <div className="flex gap-2">
         {(["all", "active", "completed"] as FilterType[]).map((f) => (
           <button
             key={f}
-            className={`px-2 border rounded ${
-              filter === f ? "border-red-500" : "border-transparent"
-            }`}
+            className={`px-2 border rounded transition-all duration-300 ${filter === f
+                ? "border-[#ce4646] focus:shadow-[0_0_15px_rgba(206,70,70,0.4)]"
+                : "border-transparent hover:border-[#ce4646]"
+              }`}
             onClick={() => dispatch(setFilter(f))}
           >
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
       </div>
-      <button onClick={() => dispatch(clearCompleted())}>
+      <button onClick={() => dispatch(clearCompleted())} className="hover:underline">
         Clear completed
       </button>
     </div>
