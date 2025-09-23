@@ -36,18 +36,11 @@ export default function TodoItem({ todo }: { todo: Todo }) {
       ref={liRef}
       className={`group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200 ${editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"
         }`}
-      onDoubleClick={(e) => {
-        const target = e.target as HTMLElement;
-        // Nếu target là label, input hoặc button thì bỏ qua
-        if (target.tagName === "LABEL" || target.tagName === "INPUT" || target.tagName === "BUTTON") return;
-        setEditing(true);
-      }}
     >
-      <div className="flex items-center gap-3">
-        {/* checkbox */}
+      {/* Div 1: Checkbox */}
+      <div className="flex items-center">
         <label
           className={`flex items-center cursor-pointer ${editing ? "invisible" : "visible"}`}
-          onDoubleClick={(e) => e.stopPropagation()} // <--- ngăn bubbling
         >
           <input
             type="checkbox"
@@ -55,7 +48,6 @@ export default function TodoItem({ todo }: { todo: Todo }) {
             onChange={() => dispatch(toggleTodo(todo.id))}
             className="peer sr-only"
             aria-label={`Toggle ${todo.text}`}
-            onDoubleClick={(e) => e.stopPropagation()} // <--- đảm bảo checkbox cũng không bật edit
           />
           <span
             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-150 bg-white ${todo.completed ? "border-[#bddad5]" : "border-[#ededed]"
@@ -73,9 +65,13 @@ export default function TodoItem({ todo }: { todo: Todo }) {
             </svg>
           </span>
         </label>
+      </div>
 
-
-        {/* text hoặc input */}
+      {/* Div 2: Text/Input - Chỉ div này mới có doubleClick */}
+      <div 
+        className="flex-1 mx-3"
+        onDoubleClick={() => setEditing(true)}
+      >
         {editing ? (
           <input
             type="text"
@@ -96,14 +92,16 @@ export default function TodoItem({ todo }: { todo: Todo }) {
         )}
       </div>
 
-      {/* delete button */}
-      <button
-        onClick={() => dispatch(deleteTodo(todo.id))}
-        className={`transition duration-200 text-[#949494] hover:text-[#C18585] ${editing ? "invisible" : "opacity-0 group-hover:opacity-100 text-2xl"
-          }`}
-      >
-        ×
-      </button>
+      {/* Div 3: Delete Button */}
+      <div className="flex items-center">
+        <button
+          onClick={() => dispatch(deleteTodo(todo.id))}
+          className={`transition duration-200 text-[#949494] hover:text-[#C18585] ${editing ? "invisible" : "opacity-0 group-hover:opacity-100 text-2xl"
+            }`}
+        >
+          ×
+        </button>
+      </div>
     </li>
   );
 }
