@@ -9,9 +9,10 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   const liRef = useRef<HTMLLIElement>(null);
 
   const handleSave = () => {
-    const trimmedText = text.trim(); // trim đầu cuối
-    if (trimmedText === "") return;   // nếu rỗng thì không lưu
-    dispatch(updateTodo({ id: todo.id, text: trimmedText })); // lưu text đã trim
+    const trimmedText = text.trim();
+    if (!trimmedText) return;
+    dispatch(updateTodo({ id: todo.id, text: trimmedText }));
+    setText(trimmedText);
     setEditing(false);
   };
 
@@ -20,7 +21,6 @@ export default function TodoItem({ todo }: { todo: Todo }) {
     setEditing(false);
   }, [todo.text]);
 
-  // Click ra ngoài li sẽ hủy edit
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (editing && liRef.current && !liRef.current.contains(event.target as Node)) {
@@ -34,36 +34,23 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   return (
     <li
       ref={liRef}
-      className={`group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200 ${editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"
-        }`}
-      onDoubleClick={(e) => {
-        const target = e.target as HTMLElement;
-        // Nếu target là label, input hoặc button thì bỏ qua
-        if (target.tagName === "LABEL" || target.tagName === "INPUT" || target.tagName === "BUTTON") return;
-        setEditing(true);
-      }}
+      className={`group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200 ${editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"}`}
     >
-      <div className="flex items-center gap-3">
-        {/* checkbox */}
-        <label
-          className={`flex items-center cursor-pointer ${editing ? "invisible" : "visible"}`}
-          onDoubleClick={(e) => e.stopPropagation()} // <--- ngăn bubbling
-        >
+      {/* Phần 1: Checkbox/label */}
+      <div className="flex items-center px-[2px]">
+        <label className="flex items-center cursor-pointer">
           <input
             type="checkbox"
             checked={todo.completed}
             onChange={() => dispatch(toggleTodo(todo.id))}
             className="peer sr-only"
             aria-label={`Toggle ${todo.text}`}
-            onDoubleClick={(e) => e.stopPropagation()} // <--- đảm bảo checkbox cũng không bật edit
           />
           <span
-            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-150 bg-white ${todo.completed ? "border-[#bddad5]" : "border-[#ededed]"
-              }`}
+            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-150 bg-white ${todo.completed ? "border-[#bddad5]" : "border-[#ededed]"}`}
           >
             <svg
-              className={`w-4 h-4 text-[#5dc2af] transition-opacity duration-150 ${todo.completed ? "opacity-100" : "opacity-0"
-                }`}
+              className={`w-4 h-4 text-[#5dc2af] transition-opacity duration-150 ${todo.completed ? "opacity-100" : "opacity-0"}`}
               fill="none"
               stroke="currentColor"
               strokeWidth="3"
@@ -73,9 +60,13 @@ export default function TodoItem({ todo }: { todo: Todo }) {
             </svg>
           </span>
         </label>
+      </div>
 
-
-        {/* text hoặc input */}
+      {/* Phần 2: Text/span */}
+      <div
+        className="flex-1 px-3"
+        onClick={() => !editing && setEditing(true)}
+      >
         {editing ? (
           <input
             type="text"
@@ -96,14 +87,15 @@ export default function TodoItem({ todo }: { todo: Todo }) {
         )}
       </div>
 
-      {/* delete button */}
-      <button
-        onClick={() => dispatch(deleteTodo(todo.id))}
-        className={`transition duration-200 text-[#949494] hover:text-[#C18585] ${editing ? "invisible" : "opacity-0 group-hover:opacity-100 text-2xl"
-          }`}
-      >
-        ×
-      </button>
+      {/* Phần 3: Delete button */}
+      <div>
+        <button
+          onClick={() => dispatch(deleteTodo(todo.id))}
+          className={`transition duration-200 text-[#949494] hover:text-[#C18585] ${editing ? "invisible" : "opacity-0 group-hover:opacity-100 text-2xl"}`}
+        >
+          ×
+        </button>
+      </div>
     </li>
   );
 }
