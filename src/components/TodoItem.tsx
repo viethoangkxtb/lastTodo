@@ -9,9 +9,9 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   const liRef = useRef<HTMLLIElement>(null);
 
   const handleSave = () => {
-    const trimmed = text.trim();
-    if (trimmed === "") return;
-    dispatch(updateTodo({ id: todo.id, text: trimmed }));
+    const trimmedText = text.trim(); // trim đầu cuối
+    if (trimmedText === "") return;   // nếu rỗng thì không lưu
+    dispatch(updateTodo({ id: todo.id, text: trimmedText })); // lưu text đã trim
     setEditing(false);
   };
 
@@ -36,17 +36,26 @@ export default function TodoItem({ todo }: { todo: Todo }) {
       ref={liRef}
       className={`group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200 ${editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"
         }`}
-      onDoubleClick={() => setEditing(true)}
+      onDoubleClick={(e) => {
+        const target = e.target as HTMLElement;
+        // Nếu target là label, input hoặc button thì bỏ qua
+        if (target.tagName === "LABEL" || target.tagName === "INPUT" || target.tagName === "BUTTON") return;
+        setEditing(true);
+      }}
     >
       <div className="flex items-center gap-3">
         {/* checkbox */}
-        <label className={`flex items-center cursor-pointer ${editing ? "invisible" : "visible"}`}>
+        <label
+          className={`flex items-center cursor-pointer ${editing ? "invisible" : "visible"}`}
+          onDoubleClick={(e) => e.stopPropagation()} // <--- ngăn bubbling
+        >
           <input
             type="checkbox"
             checked={todo.completed}
             onChange={() => dispatch(toggleTodo(todo.id))}
             className="peer sr-only"
             aria-label={`Toggle ${todo.text}`}
+            onDoubleClick={(e) => e.stopPropagation()} // <--- đảm bảo checkbox cũng không bật edit
           />
           <span
             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-150 bg-white ${todo.completed ? "border-[#bddad5]" : "border-[#ededed]"
@@ -64,6 +73,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
             </svg>
           </span>
         </label>
+
 
         {/* text hoặc input */}
         {editing ? (

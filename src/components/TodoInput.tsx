@@ -11,9 +11,8 @@ export default function TodoInput() {
 
   return (
     <div
-      className={`flex items-center w-[550px] h-[80px] border-2 ${
-        inputFocused ? "border-[#af2f2f]" : "border-[#e6e6e6]"
-      }`}
+      className={`flex items-center w-[550px] h-[80px] border-2 ${inputFocused ? "border-[#af2f2f]" : "border-[#e6e6e6]"
+        }`}
     >
       {/* Nút bên trái */}
       <button
@@ -38,9 +37,12 @@ export default function TodoInput() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === "Enter" && text.trim() !== "") {
-            dispatch(addTodo(text));
-            setText("");
+          if (e.key === "Enter") {
+            const trimmedText = text.trim(); // trim đầu cuối
+            if (trimmedText !== "") {
+              dispatch(addTodo(trimmedText)); // dùng text đã trim
+              setText("");
+            }
           }
         }}
         onFocus={() => setInputFocused(true)}
