@@ -6,23 +6,16 @@ import type { AppDispatch } from "../store";
 export default function TodoInput() {
   const dispatch = useDispatch<AppDispatch>();
   const [text, setText] = useState("");
-  const [inputFocused, setInputFocused] = useState(false);
-  const [buttonFocused, setButtonFocused] = useState(false);
 
   return (
-    <div
-      className={`flex items-center w-[550px] h-[80px] border-2 ${inputFocused ? "border-[#af2f2f]" : "border-[#e6e6e6]"
-        }`}
-    >
+    <div className="flex items-center w-[550px] h-[80px] border-2 border-[#e6e6e6] has-[input:focus]:border-[#af2f2f]">
       {/* Nút bên trái */}
       <button
         type="button"
-        className={`w-[50px] h-full flex items-center justify-center text-gray-400 
-                    rounded-none outline-none bg-white
-                    ${buttonFocused ? "border-2 border-[#af2f2f]" : "border-2 border-transparent"}`}
+        className="w-[50px] h-full flex items-center justify-center text-gray-400 
+                   rounded-none outline-none bg-white border-2 border-transparent
+                   focus:border-[#af2f2f]"
         onClick={() => dispatch(toggleAllTodos())}
-        onFocus={() => setButtonFocused(true)}
-        onBlur={() => setButtonFocused(false)}
       >
         <span className="transform rotate-90">❯</span>
       </button>
@@ -38,15 +31,13 @@ export default function TodoInput() {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
-            const trimmedText = text.trim(); // trim đầu cuối
+            const trimmedText = text.trim();
             if (trimmedText) {
-              dispatch(addTodo(trimmedText)); // dùng text đã trim
+              dispatch(addTodo(trimmedText));
               setText("");
             }
           }
         }}
-        onFocus={() => setInputFocused(true)}
-        onBlur={() => setInputFocused(false)}
       />
     </div>
   );
