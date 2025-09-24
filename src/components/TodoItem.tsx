@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { toggleTodo, deleteTodo, updateTodo } from "../store/todoSlice";
 import type { Todo } from "../types/todo";
+import { cn } from "../shared/utils/className";
 
 export default function TodoItem({ todo }: { todo: Todo }) {
   const dispatch = useDispatch();
@@ -9,7 +10,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   const [text, setText] = useState(todo.text);
   const liRef = useRef<HTMLLIElement>(null);
 
-  function handleSave () {
+  function handleSave() {
     const trimmedText = text.trim(); // trim đầu cuối
     if (!trimmedText) return;   // nếu rỗng thì không lưu
     dispatch(updateTodo({ id: todo.id, text: trimmedText })); // lưu text đã trim
@@ -35,8 +36,10 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   return (
     <li
       ref={liRef}
-      className={`group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200 ${editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"
-        }`}
+      className={cn(
+        "group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200",
+        editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"
+      )}
     >
       {/* Div 1: Checkbox */}
       <div className="flex items-center">
@@ -51,12 +54,16 @@ export default function TodoItem({ todo }: { todo: Todo }) {
             aria-label={`Toggle ${todo.text}`}
           />
           <span
-            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-150 bg-white ${todo.completed ? "border-[#bddad5]" : "border-[#ededed]"
-              }`}
+            className={cn(
+              "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-150 bg-white",
+              todo.completed ? "border-[#bddad5]" : "border-[#ededed]"
+            )}
           >
             <svg
-              className={`w-4 h-4 text-[#5dc2af] transition-opacity duration-150 ${todo.completed ? "opacity-100" : "opacity-0"
-                }`}
+              className={cn(
+                "w-4 h-4 text-[#5dc2af] transition-opacity duration-150",
+                todo.completed ? "opacity-100" : "opacity-0"
+              )}
               fill="none"
               stroke="currentColor"
               strokeWidth="3"
@@ -69,7 +76,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
       </div>
 
       {/* Div 2: Text/Input - Chỉ div này mới có doubleClick */}
-      <div 
+      <div
         className="flex-1 mx-3"
         onDoubleClick={() => setEditing(true)}
       >
@@ -87,7 +94,10 @@ export default function TodoItem({ todo }: { todo: Todo }) {
             aria-label="Edit todo text"
           />
         ) : (
-          <span className={`text-xl ${todo.completed ? "line-through text-gray-400" : ""}`}>
+          <span className={cn(
+            "text-xl",
+            todo.completed ? "line-through text-gray-400" : ""
+          )}>
             {todo.text}
           </span>
         )}
@@ -97,8 +107,12 @@ export default function TodoItem({ todo }: { todo: Todo }) {
       <div className="flex items-center">
         <button
           onClick={() => dispatch(deleteTodo(todo.id))}
-          className={`transition duration-200 text-[#949494] hover:text-[#C18585] ${editing ? "invisible" : "opacity-0 group-hover:opacity-100 text-2xl"
-            }`}
+          className={cn(
+            "transition duration-200 text-[#949494] hover:text-[#C18585]",
+            editing
+              ? "invisible"
+              : "opacity-0 group-hover:opacity-100 text-2xl"
+          )}
         >
           ×
         </button>

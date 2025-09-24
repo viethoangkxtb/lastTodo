@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCompleted, setFilter } from "../store/todoSlice";
 import type { RootState } from "../store";
 import type { FilterType } from "../types/todo";
+import { cn } from "../shared/utils/className";
 
 export default function TodoFooter() {
   const dispatch = useDispatch();
@@ -24,10 +25,12 @@ export default function TodoFooter() {
         {(["all", "active", "completed"] as FilterType[]).map((f) => (
           <button
             key={f}
-            className={`px-2 border rounded transition-all duration-300 ${filter === f
-              ? "border-[#ce4646] focus:shadow-[0_0_15px_rgba(206,70,70,0.4)]"
-              : "border-transparent hover:border-[#ce4646]"
-              }`}
+            className={cn(
+              "px-2 border rounded transition-all duration-300",
+              filter === f
+                ? "border-[#ce4646] focus:shadow-[0_0_15px_rgba(206,70,70,0.4)]"
+                : "border-transparent hover:border-[#ce4646]"
+            )}
             onClick={() => dispatch(setFilter(f))}
           >
             {f.charAt(0).toUpperCase() + f.slice(1)}
