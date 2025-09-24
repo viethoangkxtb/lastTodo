@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toggleTodo, deleteTodo, updateTodo } from "../store/todoSlice";
 import type { Todo } from "../types/todo";
@@ -8,34 +8,21 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   const dispatch = useDispatch();
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(todo.text);
-  const liRef = useRef<HTMLLIElement>(null);
 
   function handleSave() {
-    const trimmedText = text.trim(); // trim đầu cuối
-    if (!trimmedText) return;   // nếu rỗng thì không lưu
-    dispatch(updateTodo({ id: todo.id, text: trimmedText })); // lưu text đã trim
+    const trimmedText = text.trim();
+    if (!trimmedText) return;
+    dispatch(updateTodo({ id: todo.id, text: trimmedText }));
     setEditing(false);
-  };
+  }
 
-  const handleCancel = useCallback(() => {
+  function handleCancel() {
     setText(todo.text);
     setEditing(false);
-  }, [todo.text]);
-
-  // Click ra ngoài li sẽ hủy edit
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (editing && liRef.current && !liRef.current.contains(event.target as Node)) {
-        handleCancel();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [editing, handleCancel]);
+  }
 
   return (
     <li
-      ref={liRef}
       className={cn(
         "group flex items-center justify-between border px-4 py-3 bg-white transition-colors duration-200",
         editing ? "border-[#AF2F2F]" : "border-[#e6e6e6]"
@@ -90,6 +77,7 @@ export default function TodoItem({ todo }: { todo: Todo }) {
               if (e.key === "Enter") handleSave();
               if (e.key === "Escape") handleCancel();
             }}
+            onBlur={handleCancel}
             autoFocus
             aria-label="Edit todo text"
           />
