@@ -1,18 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-
-export interface Todo {
-  id: string;
-  text: string;
-  completed: boolean;
-}
-
-export type FilterType = "all" | "active" | "completed";
-
-interface TodoState {
-  todos: Todo[];
-  filter: FilterType;
-}
+import type { FilterType, TodoState } from "../types/todo";
 
 const initialState: TodoState = {
   todos: [],

@@ -1,14 +1,12 @@
 export interface Todo {
-  id: string
-  text: string
-  completed: boolean
-  createdAt: number
+  id: string;
+  text: string;
+  completed: boolean;
 }
 
-export type FilterType = 'All' | 'Active' | 'Completed'
+export type FilterType = "all" | "active" | "completed";
 
 export interface TodoState {
-  todos: Todo[]
-  filter: FilterType
-  isEditing: string | null
+  todos: Todo[];
+  filter: FilterType;
 }

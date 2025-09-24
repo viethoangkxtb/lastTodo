@@ -39,7 +39,7 @@ export default function TodoInput() {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             const trimmedText = text.trim(); // trim đầu cuối
-            if (trimmedText !== "") {
+            if (trimmedText) {
               dispatch(addTodo(trimmedText)); // dùng text đã trim
               setText("");
             }

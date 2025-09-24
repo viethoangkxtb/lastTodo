@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { toggleTodo, deleteTodo, updateTodo, type Todo } from "../store/todoSlice";
+import { toggleTodo, deleteTodo, updateTodo } from "../store/todoSlice";
+import type { Todo } from "../types/todo";
 
 export default function TodoItem({ todo }: { todo: Todo }) {
   const dispatch = useDispatch();
@@ -8,9 +9,9 @@ export default function TodoItem({ todo }: { todo: Todo }) {
   const [text, setText] = useState(todo.text);
   const liRef = useRef<HTMLLIElement>(null);
 
-  const handleSave = () => {
+  function handleSave () {
     const trimmedText = text.trim(); // trim đầu cuối
-    if (trimmedText === "") return;   // nếu rỗng thì không lưu
+    if (!trimmedText) return;   // nếu rỗng thì không lưu
     dispatch(updateTodo({ id: todo.id, text: trimmedText })); // lưu text đã trim
     setEditing(false);
   };

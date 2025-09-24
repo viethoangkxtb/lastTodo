@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { clearCompleted, setFilter, type FilterType } from "../store/todoSlice";
+import { clearCompleted, setFilter } from "../store/todoSlice";
 import type { RootState } from "../store";
+import type { FilterType } from "../types/todo";
 
 export default function TodoFooter() {
   const dispatch = useDispatch();
